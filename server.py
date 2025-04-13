@@ -53,4 +53,5 @@ def update_settings():
     return jsonify({"message": "설정이 업데이트되었습니다.", "settings": settings})
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+    port = int(os.environ.get("PORT", 5000))
+    app.run(host='0.0.0.0', port=port)

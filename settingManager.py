@@ -5,7 +5,7 @@ import requests
 
 SETTINGS_FILE = 'settings.json'
 SAVE_FILE = 'usage_data.json'
-SERVER_URL = 'http://localhost:5000'
+SERVER_URL = 'https://time-control-server-a4qg.onrender.com/'
 
 def get_settings_from_server():
     try:

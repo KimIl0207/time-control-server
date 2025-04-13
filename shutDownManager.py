@@ -1,10 +1,11 @@
 import time
 import os
 from settingManager import get_settings_from_server, load_usage, save_usage, get_today
+import json
 
 def shutdown():
     print("사용 시간 초과! 시스템을 종료합니다.")
-    # os.system("shutdown /s /t 1")  # 리눅스는 'shutdown now'
+    os.system("shutdown /s /t 1")  # 리눅스는 'shutdown now'
 
 # 설정 및 초기값
 # 루프 전에 설정값 한 번만 미리 받아두자
@@ -47,11 +48,27 @@ try:
         usage_data[today] = usage_data.get(today, 0) + loop_elapsed
 
         if usage_data[today] >= USAGE_LIMIT:
+            status = {
+                "limit": USAGE_LIMIT,
+                "used": usage_data[today],
+                "remaining": max(0, USAGE_LIMIT - usage_data[today]),
+                "percent": min(100, round((usage_data[today] / USAGE_LIMIT) * 100, 1))
+            }
+            with open("usage_status.json", "w") as f:
+                json.dump(status, f, indent=2)
             save_usage(usage_data)
             shutdown()
             break
 
         if current_time - last_save_time >= 1:
+            status = {
+                "limit": USAGE_LIMIT,
+                "used": usage_data[today],
+                "remaining": max(0, USAGE_LIMIT - usage_data[today]),
+                "percent": min(100, round((usage_data[today] / USAGE_LIMIT) * 100, 1))
+            }
+            with open("usage_status.json", "w") as f:
+                json.dump(status, f, indent=2)
             save_usage(usage_data)
             last_save_time = current_time
             # print(f'{current_time}: 저장')

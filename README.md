@@ -18,7 +18,7 @@
 
 ### 📦 설치파일 다운로드
 
-**[👉 설치파일 받기 (Setup_ComputerUsage.exe)](https://github.com/YourUsername/time-control-server/releases/latest)**
+**[👉 설치파일 받기 (Setup_ComputerUsage.exe)](https://github.com/KimIl0207/time-control-server/releases/latest)**
 
 1. 위 링크에서 설치파일을 다운로드합니다.
 2. 실행하면 자동으로 프로그램이 설치되고 백그라운드에서 작동합니다.

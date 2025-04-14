@@ -37,11 +37,23 @@ def get_usage():
 def update_usage():
     usage = load_usage()
     today = datetime.now().strftime('%Y-%m-%d')
-    data = request.json
+    data = request.get_json()
+
+    print(f"[📥] 사용 기록 요청 수신: {data}")
+
+    if not isinstance(data, dict):
+        return jsonify({"error": "올바르지 않은 형식입니다."}), 400
 
     if 'used' in data:
-        usage[today] = float(data['used'])
-        save_usage(usage)
+        try:
+            usage[today] = float(data['used'])
+            save_usage(usage)
+            print(f"[✅] {today} 사용 기록 저장 완료: {usage[today]}초")
+        except Exception as e:
+            print(f"[❌] 저장 중 오류 발생: {e}")
+            return jsonify({"error": "저장 실패"}), 500
+    else:
+        print("[⚠️] 'used' 키가 포함되지 않음")
 
     return jsonify({"message": "✅ 사용 기록이 서버에 저장되었습니다."})
 

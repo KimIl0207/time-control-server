@@ -3,7 +3,13 @@ import json
 from datetime import datetime
 import requests
 
-APP_DIR = os.path.join(os.getenv('APPDATA'), 'ComputerUsageController')
+if os.name == 'nt':
+    APP_DIR = os.path.join(os.getenv('APPDATA'), 'ComputerUsageController')
+else:
+    APP_DIR = os.path.expanduser('~/.ComputerUsageController')
+
+os.makedirs(APP_DIR, exist_ok=True)
+
 os.makedirs(APP_DIR, exist_ok=True)
 
 SETTINGS_FILE = os.path.join(APP_DIR, 'settings.json')

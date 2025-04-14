@@ -1,5 +1,5 @@
 from flask import Flask, request, jsonify, render_template_string, send_from_directory
-from settingManager import load_settings, save_settings, load_usage
+from settingManager import load_settings, save_settings, load_usage, save_usage
 from datetime import datetime
 from flask_cors import CORS
 import os
@@ -32,6 +32,18 @@ def get_status():
 def get_usage():
     usage = load_usage()
     return jsonify(usage)
+
+@app.route('/usage', methods=['POST'])
+def update_usage():
+    usage = load_usage()
+    today = datetime.now().strftime('%Y-%m-%d')
+    data = request.json
+
+    if 'used' in data:
+        usage[today] = float(data['used'])
+        save_usage(usage)
+
+    return jsonify({"message": "✅ 사용 기록이 서버에 저장되었습니다."})
 
 @app.route('/settings', methods=['GET'])
 def get_settings():

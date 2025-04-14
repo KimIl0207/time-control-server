@@ -15,7 +15,8 @@ def get_settings_from_server():
         else:
             print("⚠️ 서버에서 설정 불러오기 실패, 상태코드:", response.status_code)
     except Exception as e:
-        print("❌ 서버 연결 오류:", e)
+        with open("server_err.log", "a", encoding="utf-8") as log:
+            log.write(f"[{datetime.now()}] 서버 연결 오류: {e}\n")
     return None
 
 
@@ -31,6 +32,19 @@ def update_settings_on_server(new_settings: dict):
             print("⚠️ 설정 업데이트 실패:", response.status_code)
     except Exception as e:
         print("❌ 서버 요청 오류:", e)
+
+def update_usage_on_server(used_time):
+    try:
+        response = requests.post(
+            f"{SERVER_URL}/usage",
+            json={"used": used_time}
+        )
+        if response.status_code == 200:
+            print("✅ 서버에 사용 기록 업데이트 완료")
+        else:
+            print("⚠️ 서버에 사용 기록 업데이트 실패:", response.status_code)
+    except Exception as e:
+        print("❌ 서버로 사용 기록 전송 실패:", e)
 
 def load_settings():
     if not os.path.exists(SETTINGS_FILE):

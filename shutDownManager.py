@@ -2,7 +2,7 @@ import time
 import os
 import json
 from datetime import datetime
-from settingManager import get_settings_from_server, load_usage, save_usage, get_today
+from settingManager import get_settings_from_server, load_usage, save_usage, get_today, update_usage_on_server
 import tkinter as tk
 
 def show_block_screen():
@@ -18,6 +18,9 @@ def show_block_screen():
 
     def try_unlock():
         if pw_entry.get() == "697442":  # ✅ 여기에 원하는 비밀번호 설정
+            from settingManager import update_settings_on_server
+            update_settings_on_server({"master_mode": True})
+            
             root.destroy()
         else:
             error_label.config(text="❌ 비밀번호가 틀렸습니다.")
@@ -114,6 +117,7 @@ try:
                 json.dump(status, f, indent=2)
             save_usage(usage_data)
             last_save_time = current_time
+            update_usage_on_server(usage_data[today])
 
         time.sleep(1)
 

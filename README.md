@@ -47,7 +47,6 @@
 | `settingManager.py` | 서버 설정 통신, 파일 저장 담당 |
 | `server.py` | Flask 기반 서버 API |
 | `client/` | React 기반 웹 UI |
-| `cucSetup.iss` | Inno Setup 설치 스크립트 |
 
 ### 🧱 빌드 도구
 - `pyinstaller` (`shutDownManager`, `watchdog` 빌드용)

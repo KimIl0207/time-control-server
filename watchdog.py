@@ -4,7 +4,7 @@ import psutil
 import os
 
 # 실행할 대상 프로그램 이름
-TARGET_EXE = "shutDownManager.exe"
+TARGET_EXE = "usageguard.exe"
 CHECK_INTERVAL = 5  # 초 단위
 
 # 현재 실행 경로에서 exe를 실행할 수 있도록 절대 경로 계산
@@ -22,7 +22,7 @@ def is_process_running():
 def start_process():
     exe_path = get_exe_path()
     print(f"🔁 {TARGET_EXE} 실행 시도 중...")
-    subprocess.Popen([exe_path], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.Popen([exe_path], cwd=os.path.dirname(exe_path), stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 
 if __name__ == "__main__":
     print("👀 Watchdog 시작됨. 타겟 프로세스 감시 중...")

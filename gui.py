@@ -3,6 +3,16 @@ import json
 import time
 from threading import Thread
 
+is_topmost = True
+
+def toggle_topmost():
+    global is_topmost
+    is_topmost = not is_topmost
+    root.attributes("-topmost", is_topmost)
+    top_button.config(
+        text="항상 위(on)" if is_topmost else "항상 위(off)"
+    )
+
 # ✅ 상태 읽기 함수
 def read_status():
     try:
@@ -78,6 +88,7 @@ root.attributes("-topmost", True)
 root.geometry("300x250+50+50")
 root.configure(bg="white")
 
+
 # ✅ 아이콘 설정 (선택)
 try:
     root.iconbitmap("monitor.ico")
@@ -113,3 +124,10 @@ create_custom_slider(root, initial_value=100, callback=lambda v: root.attributes
 # ✅ 상태 업데이트 시작
 Thread(target=update_loop, daemon=True).start()
 root.mainloop()
+
+# 상단 고정 버튼
+top_button = tk.Button(
+    root, text="항상 위(on)", command=toggle_topmost,
+    font=("맑은 고딕", 10)
+)
+top_button.pack(pady=10)

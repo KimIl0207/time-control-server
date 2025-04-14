@@ -2,8 +2,8 @@ import tkinter as tk
 import json
 import time
 from threading import Thread
-
-is_topmost = True
+from settingManager import STATUS_FILE
+import os
 
 def toggle_topmost():
     global is_topmost
@@ -16,16 +16,19 @@ def toggle_topmost():
 # ✅ 상태 읽기 함수
 def read_status():
     try:
-        with open("usage_status.json", "r") as f:
-            return json.load(f)
-    except:
-        return {
-            "limit": 0,
-            "used": 0,
-            "remaining": 0,
-            "percent": 0,
-            "updated_at": "-"
-        }
+        if os.path.exists(STATUS_FILE):
+            with open(STATUS_FILE, "r", encoding="utf-8") as f:
+                return json.load(f)
+    except Exception as e:
+        print(f"[⚠️] 상태 읽기 실패: {e}")
+
+    return {
+        "limit": 0,
+        "used": 0,
+        "remaining": 0,
+        "percent": 0,
+        "updated_at": "-"
+    }
 
 # ✅ 시간 포맷팅 함수
 def format_time(seconds):

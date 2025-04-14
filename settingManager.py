@@ -10,8 +10,6 @@ else:
 
 os.makedirs(APP_DIR, exist_ok=True)
 
-os.makedirs(APP_DIR, exist_ok=True)
-
 SETTINGS_FILE = os.path.join(APP_DIR, 'settings.json')
 SAVE_FILE = os.path.join(APP_DIR, 'usage_data.json')
 STATUS_FILE = os.path.join(APP_DIR, 'usage_status.json')
@@ -43,7 +41,7 @@ def update_settings_on_server(new_settings: dict):
 
 def update_usage_on_server(seconds):
     try:
-        requests.post(f"{SERVER_URL}/usage", json={"seconds": seconds})
+        requests.post(f"{SERVER_URL}/usage", json={"used": seconds})
     except:
         pass
 

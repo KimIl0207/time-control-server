@@ -1,10 +1,11 @@
 import time
 import json
 from datetime import datetime
-from settingManager import get_settings_from_server, load_usage, save_usage, get_today, update_usage_on_server
+from settingManager import get_settings_from_server, load_usage, save_usage, get_today, update_usage_on_server, update_settings_on_server
 import tkinter as tk
 import traceback
 import os
+from screeninfo import get_monitors
 
 APP_DIR = os.path.join(os.getenv('APPDATA'), 'ComputerUsageController')
 os.makedirs(APP_DIR, exist_ok=True)
@@ -13,38 +14,44 @@ STATUS_FILE = os.path.join(APP_DIR, 'usage_status.json')
 LOG_FILE = os.path.join(APP_DIR, 'fatal.log')
 
 def show_block_screen():
-    root = tk.Tk()
-    root.title("시간 초과")
-    root.attributes("-fullscreen", True)
-    root.attributes("-topmost", True)
-    root.configure(bg="black")
+    windows = []
 
-    root.bind("<Escape>", lambda e: "break")
-    root.protocol("WM_DELETE_WINDOW", lambda: None)
-
-    def try_unlock():
-        if pw_entry.get() == "697442":
-            from settingManager import update_settings_on_server
+    def try_unlock(entry, label, roots):
+        if entry.get() == "697442":  # ✅ 비밀번호 변경 가능
             update_settings_on_server({"master_mode": True})
-            root.destroy()
+            for win in roots:
+                win.destroy()
         else:
-            error_label.config(text="비밀번호가 틀렸습니다.")
+            label.config(text="❌ 비밀번호가 틀렸습니다.")
 
-    label = tk.Label(root, text="사용 시간이 초과되었습니다.\n지금은 컴퓨터를 사용할 수 없습니다.",
-                     fg="white", bg="black", font=("맑은 고딕", 24), justify="center")
-    label.pack(pady=20)
+    for monitor in get_monitors():
+        win = tk.Tk() if not windows else tk.Toplevel()
+        win.title("시간 초과")
+        win.geometry(f"{monitor.width}x{monitor.height}+{monitor.x}+{monitor.y}")
+        win.attributes("-topmost", True)
+        win.overrideredirect(True)
+        win.configure(bg="black")
+        win.bind("<Escape>", lambda e: "break")
+        win.protocol("WM_DELETE_WINDOW", lambda: None)
 
-    pw_entry = tk.Entry(root, show="*", font=("맑은 고딕", 16), justify="center")
-    pw_entry.pack(ipadx=10, ipady=5)
-    pw_entry.focus()
+        label = tk.Label(win, text="사용 시간이 초과되었습니다.\n지금은 컴퓨터를 사용할 수 없습니다.",
+                         fg="white", bg="black", font=("맑은 고딕", 24), justify="center")
+        label.pack(pady=20)
 
-    unlock_btn = tk.Button(root, text="잠금 해제", font=("맑은 고딕", 14), command=try_unlock)
-    unlock_btn.pack(pady=10)
+        pw_entry = tk.Entry(win, show="*", font=("맑은 고딕", 16), justify="center")
+        pw_entry.pack(ipadx=10, ipady=5)
+        pw_entry.focus()
 
-    error_label = tk.Label(root, text="", fg="red", bg="black", font=("맑은 고딕", 11))
-    error_label.pack()
+        unlock_btn = tk.Button(win, text="🔓 잠금 해제", font=("맑은 고딕", 14),
+                               command=lambda e=pw_entry, l=None, r=windows: try_unlock(e, l or error_label, r))
+        unlock_btn.pack(pady=10)
 
-    root.mainloop()
+        error_label = tk.Label(win, text="", fg="red", bg="black", font=("맑은 고딕", 11))
+        error_label.pack()
+
+        windows.append(win)
+
+    windows[0].mainloop()
 
 def shutdown():
     try:

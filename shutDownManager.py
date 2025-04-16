@@ -17,12 +17,24 @@ def show_block_screen():
     windows = []
 
     def try_unlock(entry, label, roots):
-        if entry.get() == "697442":  # ✅ 비밀번호 변경 가능
+        if entry.get() == "697442":
             update_settings_on_server({"master_mode": True})
             for win in roots:
                 win.destroy()
         else:
             label.config(text="❌ 비밀번호가 틀렸습니다.")
+
+    def poll_server_and_check_unlock():
+        while True:
+            settings = get_settings_from_server()
+            if settings and settings.get("master_mode", False):
+                for win in windows:
+                    try:
+                        win.destroy()
+                    except:
+                        pass
+                break
+            time.sleep(2)
 
     for monitor in get_monitors():
         win = tk.Tk() if not windows else tk.Toplevel()
@@ -50,6 +62,10 @@ def show_block_screen():
         error_label.pack()
 
         windows.append(win)
+
+    # 🔄 원격 해제 감시 스레드 시작
+    import threading
+    threading.Thread(target=poll_server_and_check_unlock, daemon=True).start()
 
     windows[0].mainloop()
 
@@ -91,7 +107,7 @@ try:
         if not MASTER_MODE:
             usage_data[today] = usage_data.get(today, 0) + loop_elapsed
 
-            if usage_data[today] >= USAGE_LIMIT:
+            if usage_data[today] >= USAGE_LIMIT and not MASTER_MODE:
                 save_usage(usage_data)
                 status = {
                     "limit": USAGE_LIMIT,

@@ -7,6 +7,11 @@ import os
 build_dir = os.path.join(os.path.dirname(os.path.abspath(__file__)), "client", "build")
 app = Flask(__name__, static_folder=build_dir, static_url_path="/")
 CORS(app)
+
+@app.route('/static/<path:filename>')
+def serve_static(filename):
+    return send_from_directory(os.path.join(build_dir, 'static'), filename)
+
 @app.route('/')
 def server_react():
     return send_from_directory(app.static_folder, 'index.html')

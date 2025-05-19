@@ -1,0 +1,38 @@
+# 🔧 Python 관련 캐시/임시 파일
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+
+# 🔨 PyInstaller 빌드 산출물
+/build/
+dist/
+*.spec
+
+# ⚙️ 실행 파일
+*.exe
+
+# 🔒 사용자 데이터 파일
+usage_data.json
+usage_status.json
+settings.json
+
+# 📦 설치파일 (인노셋업 결과물)
+Setup_ComputerUsage.exe
+
+# 📁 VSCode 환경 파일 (선택)
+.vscode/
+
+# 📄 기타 로그파일
+*.log
+*.tmp
+
+# bat, vbs 파일
+*.vbs
+*.bat
+
+# 기타 파일
+*.iss
+list.txt
+*.dll
+test.py
